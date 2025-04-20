@@ -1,1 +1,7 @@
+@import "@fontsource/lobster-two";
+
 @import "tailwindcss";
+
+@theme {
+  --font-display: "Lobster Two", "system-ui";
+}
