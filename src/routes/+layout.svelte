@@ -10,6 +10,6 @@
   />
 </svelte:head>
 
-<div class="max-w-7xl mx-auto w-full">
+<div class="max-w-7xl mx-auto w-full space-y-10 font-display">
   {@render children()}
 </div>
