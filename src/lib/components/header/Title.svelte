@@ -1,1 +1,1 @@
-<h1 class="text-center text-5xl">Dwichs</h1>
+<a href="/" class="text-center text-5xl hover:underline">Dwichs</a>
