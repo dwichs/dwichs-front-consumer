@@ -6,4 +6,10 @@
 
 <Header />
 <Category />
-<Restaurant />
+
+<div class="flex gap-10">
+  <Restaurant />
+  <Restaurant />
+  <Restaurant />
+  <Restaurant />
+</div>
