@@ -1,5 +1,8 @@
 <script>
   import Sandwich from "$lib/assets/food/food.jpg?enhanced";
+
+  let { menuItem } = $props();
+  console.log(menuItem);
 </script>
 
 <div
@@ -10,12 +13,8 @@
     alt="Sandwich"
     class="object-cover rounded-2xl"
   />
-  <div class="space-y-5">
-    <h3 class="text-2xl">Le Switch</h3>
-    <p>Jambon de parme, mozzarella, pesto, tomates, roquette.</p>
-    <p>€ 5</p>
-    <button class="rounded-full bg-yellow-500 size-5 cursor-pointer">
-      +
-    </button>
-  </div>
+  <h1>{menuItem.name}</h1>
+  <p>{menuItem.ingredients}</p>
+  <p>{menuItem.price}</p>
+  <button class="rounded-full bg-yellow-500 size-5 cursor-pointer"> + </button>
 </div>
