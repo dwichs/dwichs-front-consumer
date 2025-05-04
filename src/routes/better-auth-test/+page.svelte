@@ -1,9 +1,13 @@
 <script lang="ts">
   import { authClient } from "$lib/auth-client";
 
-  let name: string = "test";
+  let firstName = "john";
+  let lastName = "doe";
+
+  let name: string = `${firstName} ${lastName}`;
   let email: string = "test@test.com";
   let password: string = "Karichi25@";
+
   let error: string | null = null;
   let loading = false;
 
@@ -60,7 +64,8 @@
 <h2>Sign up</h2>
 
 <form on:submit|preventDefault={handleSignup} class="flex flex-col gap-3">
-  <input bind:value={name} placeholder="Name" required />
+  <input bind:value={firstName} placeholder="firstName" required />
+  <input bind:value={lastName} placeholder="lastName" required />
   <input type="email" bind:value={email} placeholder="Email" required />
   <input
     type="password"
