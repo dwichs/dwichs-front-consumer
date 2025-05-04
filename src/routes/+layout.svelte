@@ -12,6 +12,5 @@
 </svelte:head>
 
 <div class="max-w-7xl mx-auto w-full space-y-10 font-display">
-  <Header />
   {@render children()}
 </div>
