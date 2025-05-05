@@ -3,6 +3,14 @@
 
   let { menuItem } = $props();
   console.log(menuItem);
+
+  async function handleAddToCart() {
+    fetch("http://localhost:3000/cart", {
+      method: "POST",
+      credentials: "include", // Required to send cookies
+      body: JSON.stringify({ menuItemId: menuItem.id }),
+    });
+  }
 </script>
 
 <div
@@ -16,5 +24,10 @@
   <h1>{menuItem.name}</h1>
   <p>{menuItem.ingredients}</p>
   <p>{menuItem.price}</p>
-  <button class="rounded-full bg-yellow-500 size-5 cursor-pointer"> + </button>
+  <button
+    class="rounded-full bg-yellow-500 size-8 cursor-pointer text-center"
+    onclick={handleAddToCart}
+  >
+    +
+  </button>
 </div>
