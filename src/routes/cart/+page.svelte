@@ -1,13 +1,12 @@
 <script>
   let { data } = $props();
-
-  console.log(data.cart.data);
+  import CartItem from "$lib/components/cartItem.svelte";
+  console.log(data)
+  console.log("hello")
 </script>
 
 <div class="space-y-5">
-  <ul>
-    {#each data.cart.data as cartItem}
-      <li>{cartItem.menuItemId}</li>
-    {/each}
-  </ul>
+  {#each data.menuItems.data as menuItem}
+    <CartItem {menuItem} />
+  {/each}
 </div>

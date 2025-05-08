@@ -1,7 +1,7 @@
 /** @type {import('./$types').PageLoad} */
 export async function load({ fetch }) {
-  const response = await fetch(`/api/cart`);
-  const cart = await response.json();
+  const response = await fetch(`/api/cart/items`);
+  const menuItems = await response.json();
 
-  return { cart };
+  return { menuItems };
 }
