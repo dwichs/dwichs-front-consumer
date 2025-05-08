@@ -2,12 +2,11 @@
   import Sandwich from "$lib/assets/food/food.jpg?enhanced";
 
   let { menuItem } = $props();
-  console.log(menuItem);
 
   async function handleAddToCart() {
     fetch("http://localhost:3000/cart", {
       method: "POST",
-      credentials: "include", // Required to send cookies
+      credentials: "include",
       body: JSON.stringify({ menuItemId: menuItem.id }),
     });
   }
