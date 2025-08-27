@@ -1,0 +1,9 @@
+FROM node:22
+WORKDIR /app
+COPY package*.json .
+RUN npm install
+COPY ./src /app/src
+COPY ./static /app/static
+COPY ./vite.config.ts /app/vite.config.ts
+COPY ./.env /app/.env
+CMD npm run dev

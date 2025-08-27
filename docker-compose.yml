@@ -1,0 +1,40 @@
+name: dwichs-front-consumer
+services:
+  dwichs-front-consumer:
+    build:
+      context: .
+      dockerfile: Dockerfile.front-consumer
+    container_name: dwichs-front-consumer
+    hostname: dwichs-front-consumer
+    restart: unless-stopped
+    command: npm run dev
+    env_file:
+      - .env
+    ports:
+      - 5173:5173
+    networks:
+      - dwichs
+    develop:
+      watch:
+        - action: sync
+          path: ./src
+          target: /app/src
+
+        - action: sync
+          path: ./static
+          target: /app/static
+
+        - action: rebuild
+          path: package.json
+          target: /app
+
+        - action: rebuild
+          path: vite.config.ts
+          target: /app
+
+        - action: rebuild
+          path: .env
+          target: /app
+
+networks:
+  dwichs:
