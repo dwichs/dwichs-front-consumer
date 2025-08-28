@@ -1,0 +1,16 @@
+services:
+  front-consumer:
+    image: dwichs-front-consumer:latest
+    hostname: dwichs-front-consumer
+    ports:
+      - 5173:5173
+    # env_file:
+    #   - .env
+    networks:
+      - dwichs
+
+networks:
+  dwichs:
+    name: dwichs
+    driver: overlay
+    attachable: true
