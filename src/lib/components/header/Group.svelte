@@ -22,9 +22,15 @@
     class="dropdown-content absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
   >
     <div class="py-1">
-      <a href="#" class="text-gray-700 block px-4 py-2 text-sm">Create Group</a>
-      <a href="#" class="text-gray-700 block px-4 py-2 text-sm">Join Group</a>
-      <a href="#" class="text-gray-700 block px-4 py-2 text-sm">Leave Group</a>
+      <a href="/groups/create" class="text-gray-700 block px-4 py-2 text-sm"
+        >Create Group</a
+      >
+      <a href="/groups/join" class="text-gray-700 block px-4 py-2 text-sm"
+        >Join Group</a
+      >
+      <a href="/groups/leave" class="text-gray-700 block px-4 py-2 text-sm"
+        >Leave Group</a
+      >
     </div>
   </div>
 </details>
