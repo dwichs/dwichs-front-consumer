@@ -1,5 +1,6 @@
 <script>
   import { PUBLIC_API_BASE_CLIENT } from "$env/static/public";
+  import { currentGroup } from "$lib/stores/currentGroup.js";
 
   let name = $state("");
   let isSubmitting = $state(false);
@@ -30,7 +31,8 @@
 
       if (response.ok) {
         const group = await response.json();
-        message = `Group "${group.name}" created successfully!`;
+        $currentGroup = group.id;
+        message = `Group "${group.name}" created successfully! Other user can join this group using this code "${group.id}."`;
         name = "";
       } else {
         const error = await response.json();

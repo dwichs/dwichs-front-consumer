@@ -1,5 +1,6 @@
 <script>
   import { PUBLIC_API_BASE_CLIENT } from "$env/static/public";
+  import { currentGroup } from "$lib/stores/currentGroup.js";
 
   let groupId = $state("");
   let isSubmitting = $state(false);
@@ -30,6 +31,7 @@
 
       if (response.ok) {
         const group = await response.json();
+        $currentGroup = group.group.id;
         message = group.message;
         groupId = "";
       } else {
