@@ -1,4 +1,5 @@
 <script>
+  import { invalidateAll } from "$app/navigation";
   import { PUBLIC_API_BASE_CLIENT } from "$env/static/public";
   import { currentGroup } from "$lib/stores/currentGroup.js";
 
@@ -33,6 +34,7 @@
       });
 
       if (response.ok) {
+        await invalidateAll(); // or invalidate('/api/my-data');
         const result = await response.json();
         if (groupId === $currentGroup) {
           $currentGroup = null;

@@ -1,4 +1,5 @@
 <script>
+  import { invalidateAll } from "$app/navigation";
   import { PUBLIC_API_BASE_CLIENT } from "$env/static/public";
   import { currentGroup } from "$lib/stores/currentGroup.js";
 
@@ -30,6 +31,7 @@
       });
 
       if (response.ok) {
+        await invalidateAll(); // or invalidate('/api/my-data');
         const group = await response.json();
         $currentGroup = group.id;
         message = `Group "${group.name}" created successfully! Other user can join this group using this code "${group.id}."`;
