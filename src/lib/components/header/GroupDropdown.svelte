@@ -74,7 +74,7 @@
           href={`/groups/${group.id}`}
           class="text-gray-700 block px-4 py-2 text-sm hover:underline"
         >
-          {group.name}
+          {group.name} #{group.id}
         </a>
       {/each}
     </div>
