@@ -6,10 +6,9 @@
   let { userGroups } = $props();
 </script>
 
-<div class="flex justify-between pt-10 items-center">
-  <div></div>
+<div class="flex justify-center p-5">
   <Title />
-  <div class="flex gap-10 justify-center align-center">
+  <div class="absolute flex gap-5 top-0 right-0 p-5">
     <GroupDropdown {userGroups} />
     <UserMenuTrigger />
   </div>
