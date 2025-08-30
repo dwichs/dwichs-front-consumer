@@ -1,13 +1,14 @@
 <script>
+  import { PUBLIC_API_BASE_CLIENT } from "$env/static/public";
+
   let name = $state("");
-  let ownerId = $state("");
   let isSubmitting = $state(false);
   let message = $state("");
 
   async function handleSubmit(event) {
     event.preventDefault();
 
-    if (!name || !ownerId) {
+    if (!name) {
       message = "Please fill in all fields";
       return;
     }
@@ -16,14 +17,14 @@
     message = "";
 
     try {
-      const response = await fetch("/api/groups", {
+      const response = await fetch(`${PUBLIC_API_BASE_CLIENT}/groups`, {
+        credentials: "include",
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           name: name.trim(),
-          ownerId: ownerId.trim(),
         }),
       });
 
@@ -31,7 +32,6 @@
         const group = await response.json();
         message = `Group "${group.name}" created successfully!`;
         name = "";
-        ownerId = "";
       } else {
         const error = await response.json();
         message = `Error: ${error.message || "Failed to create group"}`;
@@ -51,18 +51,6 @@
       id="name"
       type="text"
       bind:value={name}
-      required
-      disabled={isSubmitting}
-      class="w-full px-3 py-2 border border-gray-300 rounded-md disabled:bg-gray-100"
-    />
-  </div>
-
-  <div class="mb-4">
-    <label for="ownerId" class="block mb-1 font-medium">Owner ID:</label>
-    <input
-      id="ownerId"
-      type="text"
-      bind:value={ownerId}
       required
       disabled={isSubmitting}
       class="w-full px-3 py-2 border border-gray-300 rounded-md disabled:bg-gray-100"
