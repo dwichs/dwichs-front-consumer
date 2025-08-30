@@ -1,5 +1,5 @@
 FROM node:22-alpine AS builder
-ARG PUBLIC_API_BASE_CLIENT="http://localhost:3000" 
+ARG PUBLIC_API_BASE_CLIENT="https://api.karitchi.com"
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
