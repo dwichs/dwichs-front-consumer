@@ -17,7 +17,7 @@
     message = "";
 
     try {
-      const response = await fetch(`${PUBLIC_API_BASE_CLIENT}/groups`, {
+      const response = await fetch(`${PUBLIC_API_BASE_CLIENT}/groups/create`, {
         credentials: "include",
         method: "POST",
         headers: {
