@@ -1,4 +1,20 @@
-<details class="relative inline-block text-left">
+<script>
+  document.addEventListener("click", function (event) {
+    const dropdown = document.getElementById("dropdown");
+    if (!dropdown.contains(event.target)) {
+      dropdown.removeAttribute("open");
+    }
+  });
+
+  // Close dropdown when clicking on navigation links
+  document.addEventListener("click", function (event) {
+    if (event.target.tagName === "A" && event.target.closest("#dropdown")) {
+      document.getElementById("dropdown").removeAttribute("open");
+    }
+  });
+</script>
+
+<details class="relative inline-block text-left" id="dropdown">
   <summary
     class="inline-flex items-center justify-center h-full w-full rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-100"
   >
@@ -17,18 +33,23 @@
       />
     </svg>
   </summary>
-
   <div
     class="dropdown-content absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
   >
     <div class="py-1">
-      <a href="/groups/create" class="text-gray-700 block px-4 py-2 text-sm"
+      <a
+        href="/groups/create"
+        class="text-gray-700 block px-4 py-2 text-sm hover:underline"
         >Create Group</a
       >
-      <a href="/groups/join" class="text-gray-700 block px-4 py-2 text-sm"
+      <a
+        href="/groups/join"
+        class="text-gray-700 block px-4 py-2 text-sm hover:underline"
         >Join Group</a
       >
-      <a href="/groups/leave" class="text-gray-700 block px-4 py-2 text-sm"
+      <a
+        href="/groups/leave"
+        class="text-gray-700 block px-4 py-2 text-sm hover:underline"
         >Leave Group</a
       >
     </div>
