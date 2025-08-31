@@ -3,9 +3,11 @@
   import CartItem from "$lib/components/cartItem.svelte";
   let { data } = $props();
 
-  const total = data.cartItems.reduce((sum, item) => {
-    return sum + parseFloat(item.price);
-  }, 0);
+  const total = data.cartItems
+    .reduce((sum, item) => {
+      return sum + parseFloat(item.price);
+    }, 0)
+    .toFixed(2);
 
   async function handleAddOrder() {
     const res = await fetch(`${PUBLIC_API_BASE_CLIENT}/carts`, {
