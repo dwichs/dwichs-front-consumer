@@ -1,5 +1,15 @@
 <script>
   const { userGroups } = $props();
+  import { currentGroup } from "$lib/stores/currentGroup.js";
+
+  function closeDropdown() {
+    document.getElementById("dropdown").removeAttribute("open");
+  }
+
+  function handleGroupSelect(groupId) {
+    $currentGroup = groupId;
+    closeDropdown();
+  }
 
   document.addEventListener("click", (event) => {
     const dropdown = document.getElementById("dropdown");
@@ -7,7 +17,6 @@
       dropdown.removeAttribute("open");
     }
   });
-
   document.addEventListener("click", (event) => {
     if (event.target.tagName === "A" && event.target.closest("#dropdown")) {
       document.getElementById("dropdown").removeAttribute("open");
@@ -35,48 +44,50 @@
       />
     </svg>
   </summary>
-
   <div
-    class="dropdown-content absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+    class="dropdown-content p-3 absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg border border-gray-300 focus:outline-none"
   >
-    <div class="py-1">
-      <div class="p-3 space-y-3">
-        <h3>Actions :</h3>
-        <hr />
-      </div>
-      <a
-        href="/groups/create"
-        class="text-gray-700 block px-4 py-2 text-sm hover:underline"
-      >
-        Create Group
-      </a>
-      <a
-        href="/groups/join"
-        class="text-gray-700 block px-4 py-2 text-sm hover:underline"
-      >
-        Join Group
-      </a>
-      <a
-        href="/groups/leave"
-        class="text-gray-700 block px-4 py-2 text-sm hover:underline"
-      >
-        Leave Group
-      </a>
-      {#if userGroups.groups.length}
-        <div class="p-3 space-y-3">
-          <h3>Groups :</h3>
+    <div class="space-y-10">
+      <div class="space-y-5">
+        <!-- actions -->
+        <div class="space-y-3">
+          <h3>Actions :</h3>
           <hr />
         </div>
-      {/if}
-
-      {#each userGroups.groups as group (group.id)}
-        <a
-          href={`/groups/${group.id}`}
-          class="text-gray-700 block px-4 py-2 text-sm hover:underline"
-        >
-          {group.name} #{group.id}
-        </a>
-      {/each}
+        <div class="flex flex-col gap-5">
+          <a
+            href="/groups/create"
+            class="text-gray-700 text-sm hover:underline"
+          >
+            Create Group
+          </a>
+          <a href="/groups/join" class="text-gray-700 text-sm hover:underline">
+            Join Group
+          </a>
+          <a href="/groups/leave" class="text-gray-700 text-sm hover:underline">
+            Leave Group
+          </a>
+        </div>
+      </div>
+      <div class="space-y-5">
+        {#if userGroups.groups.length}
+          <!-- groups -->
+          <div class="space-y-3">
+            <h3>Groups :</h3>
+            <hr />
+          </div>
+        {/if}
+        <div class="flex flex-col gap-5">
+          {#each userGroups.groups as group (group.id)}
+            <button
+              onclick={() => handleGroupSelect(group.id)}
+              class="text-gray-700 text-sm hover:underline text-left"
+            >
+              {group.name} #{group.id}
+            </button>
+          {/each}
+        </div>
+      </div>
     </div>
   </div>
 </details>
