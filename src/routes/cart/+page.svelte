@@ -1,9 +1,11 @@
 <script>
+  import { PUBLIC_API_BASE_CLIENT } from "$env/static/public";
+
   let { data } = $props();
   import CartItem from "$lib/components/cartItem.svelte";
 
   async function handleAddOrder() {
-    const res = await fetch("http://localhost:3000/orders", {
+    const res = await fetch(`${PUBLIC_API_BASE_CLIENT}/orders`, {
       method: "POST",
       credentials: "include",
     });
