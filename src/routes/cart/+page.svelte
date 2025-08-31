@@ -2,10 +2,11 @@
   import { PUBLIC_API_BASE_CLIENT } from "$env/static/public";
 
   let { data } = $props();
+
   import CartItem from "$lib/components/cartItem.svelte";
 
   async function handleAddOrder() {
-    const res = await fetch(`${PUBLIC_API_BASE_CLIENT}/orders`, {
+    const res = await fetch(`${PUBLIC_API_BASE_CLIENT}/carts`, {
       method: "POST",
       credentials: "include",
     });
@@ -19,7 +20,7 @@
 </script>
 
 <div class="space-y-5">
-  {#each data.menuItems.data as menuItem}
+  {#each data.cartItems as menuItem}
     <CartItem {menuItem} />
   {/each}
   <button
