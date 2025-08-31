@@ -9,7 +9,7 @@
 
 <svelte:head>
   <link
-    href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=block"
     rel="stylesheet"
   />
 </svelte:head>

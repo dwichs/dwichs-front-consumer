@@ -1,6 +1,7 @@
 <script>
   const { userGroups } = $props();
   import { currentGroup } from "$lib/stores/currentGroup.js";
+  import { invalidateAll } from "$app/navigation";
 
   function closeDropdown() {
     document.getElementById("dropdown").removeAttribute("open");
@@ -8,6 +9,7 @@
 
   function handleGroupSelect(groupId) {
     $currentGroup = groupId;
+    invalidateAll(); // or invalidate('/api/my-data');
     closeDropdown();
   }
 

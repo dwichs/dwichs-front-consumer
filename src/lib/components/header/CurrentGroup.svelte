@@ -1,5 +1,11 @@
 <script>
   import { currentGroup } from "../../stores/currentGroup.js";
+  import { invalidateAll } from "$app/navigation";
+
+  function handleClick(currentGroup) {
+    invalidateAll();
+    currentGroup.set(null);
+  }
 </script>
 
 {#if $currentGroup}
@@ -9,7 +15,7 @@
     <span>Current group: {$currentGroup}</span>
     <!-- Close button to deactivate group -->
     <button
-      on:click={() => currentGroup.set(null)}
+      onclick={() => handleClick(currentGroup)}
       class=" text-gray-500 hover:text-gray-700 focus:outline-none cursor-pointer"
       aria-label="Deactivate current group"
     >
