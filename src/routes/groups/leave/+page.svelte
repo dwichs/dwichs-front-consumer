@@ -34,7 +34,7 @@
       });
 
       if (response.ok) {
-        await invalidateAll(); // or invalidate('/api/my-data');
+        await invalidateAll();
         const result = await response.json();
         if (groupId === $currentGroup) {
           $currentGroup = null;
