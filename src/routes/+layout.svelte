@@ -9,7 +9,7 @@
 
 <svelte:head>
   <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&icon_names=shopping_cart&display=block"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=block"
     rel="stylesheet"
   />
 </svelte:head>
