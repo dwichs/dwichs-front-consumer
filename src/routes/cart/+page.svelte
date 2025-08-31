@@ -1,4 +1,6 @@
 <script>
+  import { currentGroup } from "$lib/stores/currentGroup.js";
+  import { get } from "svelte/store";
   import { PUBLIC_API_BASE_CLIENT } from "$env/static/public";
   import CartItem from "$lib/components/cartItem.svelte";
   let { data } = $props();
@@ -10,7 +12,12 @@
     .toFixed(2);
 
   async function handleAddOrder() {
-    const res = await fetch(`${PUBLIC_API_BASE_CLIENT}/carts`, {
+    const currentGroupValue = get(currentGroup);
+    const url = currentGroupValue
+      ? `${PUBLIC_API_BASE_CLIENT}/orders?groupId=${currentGroupValue}`
+      : `${PUBLIC_API_BASE_CLIENT}/orders`;
+
+    const res = await fetch(url, {
       method: "POST",
       credentials: "include",
     });
@@ -34,6 +41,6 @@
     class="text-3xl bg-yellow-500 transition ease-in-out rounded-full p-3 mb-5 hover:shadow-xl border w-full cursor-pointer"
     onclick={handleAddOrder}
   >
-    Commander
+    Order
   </button>
 </div>
