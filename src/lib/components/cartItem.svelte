@@ -1,5 +1,6 @@
 <script>
   import Sandwich from "$lib/assets/food/food.jpg?enhanced";
+  import { invalidateAll } from "$app/navigation";
   import { PUBLIC_API_BASE_CLIENT } from "$env/static/public";
   import { currentGroup } from "$lib/stores/currentGroup.js";
   import { get } from "svelte/store";
@@ -19,8 +20,8 @@
       });
 
       if (response.ok) {
-        // Refresh the page or emit an event to update the cart
-        window.location.reload();
+        await invalidateAll();
+        console.error("Item successfully deleted");
       } else {
         console.error("Failed to delete item from cart");
       }
