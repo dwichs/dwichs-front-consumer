@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { invalidateAll } from "$app/navigation";
   import { PUBLIC_API_BASE_CLIENT } from "$env/static/public";
 
   interface User {
@@ -58,11 +59,8 @@
   function getStatusBadgeClass(status: string): string {
     switch (status.toLowerCase()) {
       case "paid":
-      case "completed":
         return "bg-green-100 text-green-800 border-green-200";
-      case "pending":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      case "disputed":
+      case "unpaid":
         return "bg-red-100 text-red-800 border-red-200";
       default:
         return "bg-gray-100 text-gray-800 border-gray-200";
@@ -101,9 +99,7 @@
 
       await response.json();
 
-      // Refresh the page data or update the local state
-      // You might want to dispatch an event or call a parent function to refresh data
-      window.location.reload(); // Simple approach - you might want something more elegant
+      await invalidateAll();
     } catch (error) {
       console.error("Error marking reimbursement as paid:", error);
       alert("Failed to mark as paid. Please try again.");
@@ -114,14 +110,17 @@
 
   // Helper function to check if all reimbursements in a group are paid
   function areAllReimbursementsPaid(reimbursements: Reimbursement[]): boolean {
-    return reimbursements.every(
-      (r) => r.status === "paid" || r.status === "completed",
-    );
+    return reimbursements.every((r) => r.status === "paid");
   }
 
-  // Helper function to count pending reimbursements
-  function countPendingReimbursements(reimbursements: Reimbursement[]): number {
-    return reimbursements.filter((r) => r.status === "pending").length;
+  // Helper function to count unpaid reimbursements
+  function countUnpaidReimbursements(reimbursements: Reimbursement[]): number {
+    return reimbursements.filter((r) => r.status === "unpaid").length;
+  }
+
+  // Helper function to get status display text
+  function getStatusDisplayText(status: string): string {
+    return status === "paid" ? "Paid" : "Unpaid";
   }
 </script>
 
@@ -196,11 +195,11 @@
                           item.reimbursements,
                         )
                           ? 'bg-green-100 text-green-800 border-green-200'
-                          : 'bg-yellow-100 text-yellow-800 border-yellow-200'}"
+                          : 'bg-red-100 text-red-800 border-red-200'}"
                       >
                         {areAllReimbursementsPaid(item.reimbursements)
                           ? "All Paid"
-                          : `${countPendingReimbursements(item.reimbursements)} Pending`}
+                          : `${countUnpaidReimbursements(item.reimbursements)} Unpaid`}
                       </span>
                     </div>
                   </div>
@@ -230,7 +229,7 @@
                                   reimbursement.status,
                                 )}"
                               >
-                                {reimbursement.status}
+                                {getStatusDisplayText(reimbursement.status)}
                               </span>
                             </div>
                             <p class="text-sm">{reimbursement.restaurant}</p>
@@ -241,7 +240,7 @@
                               {formatCurrency(reimbursement.amount)}
                             </p>
                           </div>
-                          {#if reimbursement.status === "pending"}
+                          {#if reimbursement.status === "unpaid"}
                             <button
                               class="ml-2 px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
                               disabled={loadingStates[reimbursement.id]}
@@ -292,11 +291,11 @@
                           item.reimbursements,
                         )
                           ? 'bg-green-100 text-green-800 border-green-200'
-                          : 'bg-yellow-100 text-yellow-800 border-yellow-200'}"
+                          : 'bg-red-100 text-red-800 border-red-200'}"
                       >
                         {areAllReimbursementsPaid(item.reimbursements)
                           ? "All Paid"
-                          : `${countPendingReimbursements(item.reimbursements)} Pending`}
+                          : `${countUnpaidReimbursements(item.reimbursements)} Unpaid`}
                       </span>
                     </div>
                   </div>
@@ -326,7 +325,7 @@
                                   reimbursement.status,
                                 )}"
                               >
-                                {reimbursement.status}
+                                {getStatusDisplayText(reimbursement.status)}
                               </span>
                             </div>
                             <p class="text-sm">{reimbursement.restaurant}</p>
@@ -339,7 +338,7 @@
                           </div>
                           {#if reimbursement.status === "unpaid"}
                             <button
-                              class="ml-2 px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                              class="ml-2 px-3 py-1 bg-yellow-500 text-white text-sm rounded cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                               disabled={loadingStates[reimbursement.id]}
                               onclick={() =>
                                 markReimbursementAsPaid(reimbursement.id)}
