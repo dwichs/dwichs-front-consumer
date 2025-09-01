@@ -28,28 +28,31 @@
 
 <details class="relative inline-block text-left" id="dropdown">
   <summary
-    class="relative p-3 rounded cursor-pointer border border-gray-300 shadow flex items-center justify-between gap-2"
+    class="relative p-2 sm:p-3 rounded cursor-pointer border border-gray-300 shadow flex items-center justify-between gap-1 sm:gap-2"
   >
-    <span class="text-base"> Groups </span>
-    <span class="material-symbols-outlined"> keyboard_arrow_down </span>
+    <span class="text-sm sm:text-base"> Groups </span>
+    <span class="material-symbols-outlined text-lg sm:text-xl">
+      keyboard_arrow_down
+    </span>
   </summary>
   <div
-    class="dropdown-content p-3 absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg border border-gray-300 focus:outline-none"
+    class="dropdown-content p-3 absolute right-0 z-10 mt-2 w-56 sm:w-48 origin-top-right rounded-md bg-white shadow-lg border border-gray-300 focus:outline-none"
   >
-    <div class="space-y-10">
-      <div class="space-y-5">
+    <div class="space-y-6 sm:space-y-10">
+      <div class="space-y-3 sm:space-y-5">
         <!-- actions -->
         <div class="space-y-3">
-          <h3>Actions :</h3>
+          <h3 class="text-sm sm:text-base">Actions :</h3>
           <hr />
         </div>
-        <div class="flex flex-col gap-5">
+        <div class="flex flex-col gap-3 sm:gap-5">
           <a
             href="/groups/create"
             class="text-gray-700 text-sm hover:underline"
           >
             Create Group
           </a>
+
           <a href="/groups/join" class="text-gray-700 text-sm hover:underline">
             Join Group
           </a>
@@ -58,15 +61,15 @@
           </a>
         </div>
       </div>
-      <div class="space-y-5">
+      <div class="space-y-3 sm:space-y-5">
         {#if userGroups.groups.length}
           <!-- groups -->
           <div class="space-y-3">
-            <h3>Groups :</h3>
+            <h3 class="text-sm sm:text-base">Groups :</h3>
             <hr />
           </div>
         {/if}
-        <div class="flex flex-col gap-5">
+        <div class="flex flex-col gap-3 sm:gap-5">
           {#each userGroups.groups as group (group.id)}
             <button
               onclick={() => handleGroupSelect(group.id)}
