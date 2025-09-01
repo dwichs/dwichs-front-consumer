@@ -4,7 +4,9 @@
 </script>
 
 <div class="flex min-h-screen items-center justify-center p-4">
-  <div class="flex w-full max-w-6xl justify-between gap-40">
+  <div
+    class="flex flex-col lg:flex-row w-full max-w-6xl justify-between gap-8 lg:gap-40"
+  >
     <AuthHero />
     <SignUpForm />
   </div>
