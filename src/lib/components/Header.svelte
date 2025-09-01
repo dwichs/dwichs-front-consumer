@@ -1,6 +1,5 @@
 <script>
   import Title from "./header/Title.svelte";
-  import UserMenuTrigger from "./header/UserMenuTrigger.svelte";
   import GroupDropdown from "./header/GroupDropdown.svelte";
   import CurrentGroup from "./header/CurrentGroup.svelte";
   import Cart from "./header/Cart.svelte";

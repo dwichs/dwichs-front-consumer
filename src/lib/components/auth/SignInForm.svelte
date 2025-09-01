@@ -33,7 +33,7 @@
   <h1
     class="text-center text-6xl underline decoration-yellow-500 underline-offset-20 decoration-dotted"
   >
-    Connectez-vous.
+    Sign in.
   </h1>
 
   <form
@@ -43,14 +43,14 @@
     <input
       type="email"
       bind:value={email}
-      placeholder="Mail"
+      placeholder="Email"
       required
       class="border border-gray-400 p-4 rounded-2xl"
     />
     <input
       type="password"
       bind:value={password}
-      placeholder="Mot de passe"
+      placeholder="Password"
       minlength="8"
       required
       class="border border-gray-400 p-4 rounded-2xl"
@@ -60,14 +60,14 @@
         href="/sign-up"
         class="w-full rounded-full border py-2 px-4 hover:scale-105 hover:shadow-xl transition ease-in-out"
       >
-        Créer mon compte
+        Create account
       </a>
       <button
         type="submit"
         disabled={loading}
         class="bg-yellow-500 hover:scale-105 transition ease-in-out rounded-full p-3 hover:shadow-xl border w-full cursor-pointer"
       >
-        {#if loading}Connection...{:else}Me connecter{/if}
+        {#if loading}Connecting...{:else}Sign in{/if}
       </button>
     </div>
     {#if error}
