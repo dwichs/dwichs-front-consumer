@@ -1,6 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { authClient } from "$lib/auth-client";
+  import { currentGroup } from "$lib/stores/currentGroup.js";
 
   let loading = false;
 
@@ -17,6 +18,7 @@
     if (err) {
       console.log("error");
     } else {
+      currentGroup.set(null);
       goto("/sign-in");
     }
   }
