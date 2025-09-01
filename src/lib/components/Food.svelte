@@ -35,20 +35,33 @@
 </script>
 
 <div
-  class="border border-gray-100 shadow-xl overflow-hidden rounded-2xl p-5 w-full flex flex-col gap-5 hover:scale-105 hover:shadow-yellow-500 transition ease-in-out duration-200"
+  class=" rounded-3xl overflow-hidden group transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-gray-300"
 >
-  <enhanced:img
-    src={Sandwich}
-    alt="Sandwich"
-    class="object-cover rounded-2xl"
-  />
-  <h1>{menuItem.name}</h1>
-  <p>{menuItem.ingredients}</p>
-  <p>{menuItem.price}</p>
-  <button
-    class="rounded-full bg-yellow-500 size-8 cursor-pointer text-center"
-    onclick={handleAddToCart}
-  >
-    +
-  </button>
+  <div class="relative overflow-hidden">
+    <enhanced:img
+      src={Sandwich}
+      alt="Sandwich"
+      class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+    />
+    <button
+      class="absolute cursor-pointer hover:bg-yellow-500 hover:text-white bottom-4 right-4 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-xl font-medium text-gray-900 hover:bg-yellow-50 transition-colors duration-200"
+      onclick={handleAddToCart}
+    >
+      <span class="material-symbols-outlined"> add </span>
+    </button>
+  </div>
+
+  <div class="p-6 space-y-3">
+    <h3 class="text-lg font-semibold text-gray-900 leading-tight">
+      {menuItem.name}
+    </h3>
+
+    <p class="text-sm text-gray-500 leading-relaxed">
+      {menuItem.ingredients}
+    </p>
+
+    <p class="text-xl font-bold text-gray-900">
+      {menuItem.price}
+    </p>
+  </div>
 </div>
