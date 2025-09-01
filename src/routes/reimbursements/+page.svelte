@@ -7,18 +7,21 @@
     email: string;
   }
 
-  interface Order {
+  interface Reimbursement {
+    id: number; // Actual reimbursement ID from database
     orderId: number;
     restaurant: string;
     orderDate: string;
     amount: number;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
   }
 
   interface ReimbursementItem {
-    id: string; // This should be the actual reimbursement ID from the database
     user: User;
     amount: number;
-    orders: Order[];
+    reimbursements: Reimbursement[];
   }
 
   interface ReimbursementData {
@@ -38,8 +41,8 @@
 
   let { data }: { data: PageData } = $props();
 
-  // Loading states for each reimbursement item
-  let loadingStates: Record<string, boolean> = {};
+  // Loading states for each reimbursement
+  let loadingStates: Record<number, boolean> = $state({});
 
   function formatCurrency(amount: number): string {
     return new Intl.NumberFormat("en-US", {
@@ -52,31 +55,39 @@
     return new Date(dateString).toLocaleDateString();
   }
 
-  async function markAsPaid(
-    reimbursementId: string,
-    userId: string,
-    amount: number,
-  ) {
-    const key = `${reimbursementId}_${userId}`;
-    loadingStates[key] = true;
+  function getStatusBadgeClass(status: string): string {
+    switch (status.toLowerCase()) {
+      case "paid":
+      case "completed":
+        return "bg-green-100 text-green-800 border-green-200";
+      case "pending":
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "disputed":
+        return "bg-red-100 text-red-800 border-red-200";
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-200";
+    }
+  }
 
-    // Debug logging
-    console.log("markAsPaid called with:", { reimbursementId, userId, amount });
+  async function markReimbursementAsPaid(reimbursementId: number) {
+    loadingStates[reimbursementId] = true;
+
+    console.log("markReimbursementAsPaid called with:", { reimbursementId });
 
     const requestBody = {
       reimbursementId,
-      userId,
-      amount,
-      paidAt: new Date().toISOString(),
+      status: "paid",
+      settledAt: new Date().toISOString(),
     };
 
     console.log("Request body:", requestBody);
 
     try {
       const response = await fetch(
-        `${PUBLIC_API_BASE_CLIENT}/reimbursements/mark-paid`,
+        `${PUBLIC_API_BASE_CLIENT}/reimbursements/${reimbursementId}/mark-paid`,
         {
-          method: "POST",
+          credentials: "include",
+          method: "PATCH",
           headers: {
             "Content-Type": "application/json",
           },
@@ -97,8 +108,20 @@
       console.error("Error marking reimbursement as paid:", error);
       alert("Failed to mark as paid. Please try again.");
     } finally {
-      loadingStates[key] = false;
+      loadingStates[reimbursementId] = false;
     }
+  }
+
+  // Helper function to check if all reimbursements in a group are paid
+  function areAllReimbursementsPaid(reimbursements: Reimbursement[]): boolean {
+    return reimbursements.every(
+      (r) => r.status === "paid" || r.status === "completed",
+    );
+  }
+
+  // Helper function to count pending reimbursements
+  function countPendingReimbursements(reimbursements: Reimbursement[]): number {
+    return reimbursements.filter((r) => r.status === "pending").length;
   }
 </script>
 
@@ -120,19 +143,24 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="text-center">
           <p class="text-sm text-gray-600">Owed to Me</p>
-          <p class="text-2xl font-bold">
+          <p class="text-2xl font-bold text-green-600">
             {formatCurrency(data.reimbursements.summary.totalOwedToMe)}
           </p>
         </div>
         <div class="text-center">
           <p class="text-sm text-gray-600">I Owe</p>
-          <p class="text-2xl font-bold">
+          <p class="text-2xl font-bold text-red-600">
             {formatCurrency(data.reimbursements.summary.totalOwedByMe)}
           </p>
         </div>
         <div class="text-center">
           <p class="text-sm text-gray-600">Net Balance</p>
-          <p class="text-2xl font-bold">
+          <p
+            class="text-2xl font-bold {data.reimbursements.summary.netBalance >=
+            0
+              ? 'text-green-600'
+              : 'text-red-600'}"
+          >
             {formatCurrency(data.reimbursements.summary.netBalance)}
           </p>
         </div>
@@ -157,49 +185,75 @@
         {:else}
           <div class="space-y-4">
             {#each data.reimbursements.owedToMe as item}
-              {@const loadingKey = `${item.id}_${item.user.id}`}
               <div class="border border-gray-200 p-4 rounded-lg">
                 <div class="flex justify-between items-start mb-2">
                   <div>
                     <h3 class="font-medium">{item.user.name}</h3>
                     <p class="text-sm text-gray-600">{item.user.email}</p>
+                    <div class="flex gap-2 mt-2">
+                      <span
+                        class="text-xs px-2 py-1 rounded-full border {areAllReimbursementsPaid(
+                          item.reimbursements,
+                        )
+                          ? 'bg-green-100 text-green-800 border-green-200'
+                          : 'bg-yellow-100 text-yellow-800 border-yellow-200'}"
+                      >
+                        {areAllReimbursementsPaid(item.reimbursements)
+                          ? "All Paid"
+                          : `${countPendingReimbursements(item.reimbursements)} Pending`}
+                      </span>
+                    </div>
                   </div>
                   <div class="text-right">
                     <p class="text-lg font-bold">
                       {formatCurrency(item.amount)}
                     </p>
-                    <button
-                      class="mt-2 px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                      disabled={loadingStates[loadingKey]}
-                      onclick={() =>
-                        markAsPaid(item.id, item.user.id, item.amount)}
-                    >
-                      {loadingStates[loadingKey]
-                        ? "Processing..."
-                        : "Mark as Paid"}
-                    </button>
                   </div>
                 </div>
                 <details class="mt-2">
                   <summary
                     class="cursor-pointer text-sm text-gray-700 hover:text-gray-900"
                   >
-                    View {item.orders.length} order(s)
+                    View {item.reimbursements.length} reimbursement(s)
                   </summary>
-                  <div class="mt-2 space-y-1">
-                    {#each item.orders as order, index}
-                      <div class="p-3">
-                        <p class="font-medium">Order #{order.orderId}</p>
-                        <p>{order.restaurant}</p>
-                        <p class="text-gray-600">
-                          {formatDate(order.orderDate)}
-                        </p>
-                        <p>
-                          {formatCurrency(order.amount)}
-                        </p>
-                        {#if index < item.orders.length - 1}
-                          <hr class="mt-2 border-gray-200" />
-                        {/if}
+                  <div class="mt-2 space-y-2">
+                    {#each item.reimbursements as reimbursement, index}
+                      <div class="p-3 bg-gray-50 rounded-lg">
+                        <div class="flex justify-between items-start">
+                          <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                              <p class="font-medium">
+                                Order #{reimbursement.orderId}
+                              </p>
+                              <span
+                                class="text-xs px-2 py-1 rounded-full border {getStatusBadgeClass(
+                                  reimbursement.status,
+                                )}"
+                              >
+                                {reimbursement.status}
+                              </span>
+                            </div>
+                            <p class="text-sm">{reimbursement.restaurant}</p>
+                            <p class="text-sm text-gray-600">
+                              {formatDate(reimbursement.orderDate)}
+                            </p>
+                            <p class="text-sm font-medium">
+                              {formatCurrency(reimbursement.amount)}
+                            </p>
+                          </div>
+                          {#if reimbursement.status === "pending"}
+                            <button
+                              class="ml-2 px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                              disabled={loadingStates[reimbursement.id]}
+                              onclick={() =>
+                                markReimbursementAsPaid(reimbursement.id)}
+                            >
+                              {loadingStates[reimbursement.id]
+                                ? "Processing..."
+                                : "Mark Paid"}
+                            </button>
+                          {/if}
+                        </div>
                       </div>
                     {/each}
                   </div>
@@ -227,49 +281,75 @@
         {:else}
           <div class="space-y-4">
             {#each data.reimbursements.owedByMe as item}
-              {@const loadingKey = `${item.id}_${item.user.id}`}
               <div class="border border-gray-200 p-4 rounded-lg">
                 <div class="flex justify-between items-start mb-2">
                   <div>
                     <h3 class="font-medium">{item.user.name}</h3>
                     <p class="text-sm text-gray-600">{item.user.email}</p>
+                    <div class="flex gap-2 mt-2">
+                      <span
+                        class="text-xs px-2 py-1 rounded-full border {areAllReimbursementsPaid(
+                          item.reimbursements,
+                        )
+                          ? 'bg-green-100 text-green-800 border-green-200'
+                          : 'bg-yellow-100 text-yellow-800 border-yellow-200'}"
+                      >
+                        {areAllReimbursementsPaid(item.reimbursements)
+                          ? "All Paid"
+                          : `${countPendingReimbursements(item.reimbursements)} Pending`}
+                      </span>
+                    </div>
                   </div>
                   <div class="text-right">
                     <p class="text-lg font-bold">
                       {formatCurrency(item.amount)}
                     </p>
-                    <button
-                      class="mt-2 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                      disabled={loadingStates[loadingKey]}
-                      onclick={() =>
-                        markAsPaid(item.id, item.user.id, item.amount)}
-                    >
-                      {loadingStates[loadingKey]
-                        ? "Processing..."
-                        : "Mark as Paid"}
-                    </button>
                   </div>
                 </div>
                 <details class="mt-2">
                   <summary
                     class="cursor-pointer text-sm text-gray-700 hover:text-gray-900"
                   >
-                    View {item.orders.length} order(s)
+                    View {item.reimbursements.length} reimbursement(s)
                   </summary>
-                  <div class="mt-2 space-y-1">
-                    {#each item.orders as order, index}
-                      <div class="text-xs p-3">
-                        <p class="font-medium">Order #{order.orderId}</p>
-                        <p>{order.restaurant}</p>
-                        <p class="text-gray-600">
-                          {formatDate(order.orderDate)}
-                        </p>
-                        <p class="font-medium">
-                          {formatCurrency(order.amount)}
-                        </p>
-                        {#if index < item.orders.length - 1}
-                          <hr class="mt-2 border-gray-200" />
-                        {/if}
+                  <div class="mt-2 space-y-2">
+                    {#each item.reimbursements as reimbursement, index}
+                      <div class="p-3 bg-gray-50 rounded-lg">
+                        <div class="flex justify-between items-start">
+                          <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                              <p class="font-medium">
+                                Order #{reimbursement.orderId}
+                              </p>
+                              <span
+                                class="text-xs px-2 py-1 rounded-full border {getStatusBadgeClass(
+                                  reimbursement.status,
+                                )}"
+                              >
+                                {reimbursement.status}
+                              </span>
+                            </div>
+                            <p class="text-sm">{reimbursement.restaurant}</p>
+                            <p class="text-sm text-gray-600">
+                              {formatDate(reimbursement.orderDate)}
+                            </p>
+                            <p class="text-sm font-medium">
+                              {formatCurrency(reimbursement.amount)}
+                            </p>
+                          </div>
+                          {#if reimbursement.status === "unpaid"}
+                            <button
+                              class="ml-2 px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                              disabled={loadingStates[reimbursement.id]}
+                              onclick={() =>
+                                markReimbursementAsPaid(reimbursement.id)}
+                            >
+                              {loadingStates[reimbursement.id]
+                                ? "Processing..."
+                                : "Mark as Paid"}
+                            </button>
+                          {/if}
+                        </div>
                       </div>
                     {/each}
                   </div>
