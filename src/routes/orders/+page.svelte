@@ -73,22 +73,18 @@
       );
 </script>
 
-<div class="max-w-2xl mx-auto p-6 space-y-6">
-  <h1 class="text-2xl font-bold">My Order History</h1>
+<div class="p-6 space-y-6">
+  <h1 class="text-2xl">My Order History</h1>
 
   {#each data.orders || [] as order}
     <div class="border rounded-lg p-4 space-y-4">
       <div class="flex justify-between border-b pb-3">
         <div>
-          <h3 class="font-medium">Order #{order.id}</h3>
+          <h3>Order #{order.id}</h3>
           <p class="text-sm text-gray-600">
             {new Date(order.orderDate).toLocaleString("fr-FR")}
           </p>
-          <p
-            class="text-sm {order.orderParticipants.length > 1
-              ? 'text-blue-600'
-              : 'text-green-600'}"
-          >
+          <p class="text-sm {order.orderParticipants.length > 1}">
             {order.orderParticipants.length > 1
               ? "Group Order"
               : "Personal Order"}
@@ -96,63 +92,66 @@
         </div>
 
         <div
-          class="px-2 py-1 rounded text-sm
+          class="px-3 py-1 rounded-full flex h-min text-sm text-white
           {order.OrderStatus.name === 'Pending'
-            ? 'bg-yellow-100'
-            : order.OrderStatus.name === 'Ready for Pickup'
-              ? 'bg-blue-100'
+            ? 'bg-blue-500'
+            : order.OrderStatus.name === 'Cancelled'
+              ? 'bg-red-500'
               : order.OrderStatus.name === 'Picked Up'
-                ? 'bg-green-100'
-                : order.OrderStatus.name === 'Cancelled'
-                  ? 'bg-red-100'
-                  : 'bg-gray-100'}"
+                ? 'bg-green-500'
+                : 'bg-yellow-500'}"
         >
           {order.OrderStatus.name}
         </div>
       </div>
 
       <div class="space-y-2">
-        <h4 class="font-medium">Your Items:</h4>
-        {#each order.OrderItem.filter(/** @param {any} item */ (item) => item.userId === currentUserId) as item}
-          <div class="flex justify-between">
-            <div>
-              <span>{item.nameAtOrder}</span>
-              {#if item.specialRequest}
-                <div class="text-sm text-gray-600">{item.specialRequest}</div>
-              {/if}
-            </div>
-            <span>${item.priceAtOrder}</span>
-          </div>
-        {/each}
+        <h4>Your Items:</h4>
+
+        <ul class="pl-5 list-disc space-y-1">
+          {#each order.OrderItem.filter((item) => item.userId === currentUserId) as item}
+            <li class="flex justify-between">
+              <div>
+                <span>{item.nameAtOrder}</span>
+                {#if item.specialRequest}
+                  <div class="text-sm text-gray-600">{item.specialRequest}</div>
+                {/if}
+              </div>
+              <span>${item.priceAtOrder}</span>
+            </li>
+          {/each}
+        </ul>
 
         {#if order.orderParticipants.length > 1}
           {@const otherItems = order.OrderItem.filter(
-            /** @param {any} item */ (item) => item.userId !== currentUserId,
+            (item) => item.userId !== currentUserId,
           )}
           {#if otherItems.length}
             <div class="border-t pt-3 space-y-1">
-              <h4 class="font-medium">Other Participants:</h4>
-              {#each otherItems as item}
-                {@const participant = order.orderParticipants.find(
-                  /** @param {any} p */ (p) => p.userId === item.userId,
-                )}
-                <div class="flex justify-between text-gray-700">
-                  <div>
-                    <span>{item.nameAtOrder}</span>
-                    <span class="text-sm"
-                      >by {participant?.User?.name || "Unknown"}</span
-                    >
-                  </div>
-                  <span>${item.priceAtOrder}</span>
-                </div>
-              {/each}
+              <h4>Other Participants:</h4>
+              <ul class="list-disc pl-6 space-y-1">
+                {#each otherItems as item}
+                  {@const participant = order.orderParticipants.find(
+                    (p) => p.userId === item.userId,
+                  )}
+                  <li class="flex justify-between text-gray-700">
+                    <div>
+                      <span>{item.nameAtOrder}</span>
+                      <span class="text-sm"
+                        >by {participant?.User?.name || "Unknown"}</span
+                      >
+                    </div>
+                    <span>${item.priceAtOrder}</span>
+                  </li>
+                {/each}
+              </ul>
             </div>
           {/if}
         {/if}
       </div>
 
       <div class="border-t pt-3 space-y-1">
-        <div class="flex justify-between font-bold">
+        <div class="flex justify-between">
           <span>Your Total:</span>
           <span>${myTotal(order.OrderItem).toFixed(2)}</span>
         </div>
