@@ -57,12 +57,22 @@
   }
 
   interface OrdersData {
-    orders?: Order[];
+    orders?: {
+      orders: Order[];
+      currentUserId: string;
+    };
+    userGroups?: any; // Add this if you have userGroups in your data
   }
 
   let { data }: PageProps & { data: OrdersData } = $props();
 
-  const currentUserId = data.orders?.[0]?.orderParticipants?.[0]?.userId;
+  // Debug: Log the data to see what we're getting
+  console.log("Full data received:", data);
+  console.log("Orders:", data.orders);
+  console.log("Current User ID:", data.orders?.currentUserId);
+
+  // Now use the currentUserId from the API response
+  const currentUserId = data.orders?.currentUserId;
 
   const myTotal = (items: OrderItem[]): number =>
     items
@@ -76,7 +86,7 @@
 <div class="p-6 space-y-6">
   <h1 class="text-2xl">My Order History</h1>
 
-  {#each data.orders || [] as order}
+  {#each data.orders?.orders || [] as order}
     <div class="border rounded-lg p-4 space-y-4">
       <div class="flex justify-between border-b pb-3">
         <div>
@@ -84,7 +94,7 @@
           <p class="text-sm text-gray-600">
             {new Date(order.orderDate).toLocaleString("fr-FR")}
           </p>
-          <p class="text-sm {order.orderParticipants.length > 1}">
+          <p class="text-sm">
             {order.orderParticipants.length > 1
               ? "Group Order"
               : "Personal Order"}
