@@ -84,11 +84,7 @@
           <p class="text-sm text-gray-600">
             {new Date(order.orderDate).toLocaleString("fr-FR")}
           </p>
-          <p
-            class="text-sm {order.orderParticipants.length > 1
-              ? 'text-blue-600'
-              : 'text-green-600'}"
-          >
+          <p class="text-sm {order.orderParticipants.length > 1}">
             {order.orderParticipants.length > 1
               ? "Group Order"
               : "Personal Order"}
@@ -98,12 +94,12 @@
         <div
           class="px-3 py-1 rounded-full flex h-min text-sm text-white
           {order.OrderStatus.name === 'Pending'
-            ? 'bg-yellow-500'
+            ? 'bg-blue-500'
             : order.OrderStatus.name === 'Cancelled'
               ? 'bg-red-500'
               : order.OrderStatus.name === 'Picked Up'
                 ? 'bg-green-500'
-                : 'bg-gray-500'}"
+                : 'bg-yellow-500'}"
         >
           {order.OrderStatus.name}
         </div>
