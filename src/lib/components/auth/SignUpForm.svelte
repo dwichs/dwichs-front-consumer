@@ -2,32 +2,29 @@
   import { goto } from "$app/navigation";
   import { authClient } from "$lib/auth-client";
 
-  let firstName = "john";
-  let lastName = "doe";
+  let firstName = $state("john");
+  let lastName = $state("doe");
+  let email = $state("test@test.com");
+  let password = $state("Karichi25@");
+  let error = $state<string | null>(null);
+  let loading = $state(false);
 
-  let name: string = `${firstName} ${lastName}`;
-  let email: string = "test@test.com";
-  let password: string = "Karichi25@";
-
-  let error: string | null = null;
-  let loading = false;
+  // Derived state that automatically updates when firstName or lastName changes
+  let name = $derived(`${firstName} ${lastName}`);
 
   async function handleSignup() {
     loading = true;
-
     const { data, error: err } = await authClient.signUp.email({
       name,
       email,
       password,
     });
-
     console.log(data);
     console.log(err);
-
     loading = false;
-
     if (err) {
       console.log("error");
+      error = err.message || "An error occurred during signup";
     } else {
       goto("/restaurants");
     }
@@ -40,11 +37,7 @@
   >
     Créez votre compte.
   </h1>
-
-  <form
-    on:submit|preventDefault={handleSignup}
-    class="flex flex-col text-3xl gap-5"
-  >
+  <form onsubmit={handleSignup} class="flex flex-col text-3xl gap-5">
     <input
       bind:value={firstName}
       placeholder="Prénom"
@@ -78,9 +71,8 @@
         disabled={loading}
         class="bg-yellow-500 hover:scale-105 transition ease-in-out rounded-full p-3 hover:shadow-xl border w-full cursor-pointer"
       >
-        {#if loading}Création du compte...{:else}Créer mon compte{/if}
+        {loading ? "Création du compte..." : "Créer mon compte"}
       </button>
-
       <a
         href="/sign-in"
         class="w-full rounded-full border py-2 px-4 hover:scale-105 hover:shadow-xl transition ease-in-out"
@@ -89,7 +81,7 @@
       </a>
     </div>
     {#if error}
-      <p class="bg-red-500">{error}</p>
+      <p class="bg-red-500 text-white p-2 rounded">{error}</p>
     {/if}
   </form>
 </div>
