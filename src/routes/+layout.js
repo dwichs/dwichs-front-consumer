@@ -12,7 +12,10 @@ export async function load({ fetch, url }) {
 
   if (!res.ok) {
     // If groups call fails and we're not on sign-in, redirect
-    if (browser && url.pathname !== "/sign-in") {
+    if (
+      (browser && url.pathname !== "/sign-in") ||
+      url.pathname !== "/sign-up"
+    ) {
       throw redirect(302, "/sign-in");
     }
     console.error(`Failed to fetch groups: ${res.status}`);
