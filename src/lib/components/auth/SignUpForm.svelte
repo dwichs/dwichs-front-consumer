@@ -5,11 +5,17 @@
   let lastName = $state("doe");
   let email = $state("test@test.com");
   let password = $state("Karichi25@");
+  let acceptTerms = $state(false);
   let error = $state<string | null>(null);
   let loading = $state(false);
   // Derived state that automatically updates when firstName or lastName changes
   let name = $derived(`${firstName} ${lastName}`);
   async function handleSignup() {
+    if (!acceptTerms) {
+      error = "You must accept the terms and conditions to create an account";
+      return;
+    }
+
     loading = true;
     const { data, error: err } = await authClient.signUp.email({
       name,
@@ -65,15 +71,44 @@
       required
       class="border border-gray-400 p-3 lg:p-4 rounded-2xl text-base lg:text-3xl"
     />
+
+    <!-- Terms and Conditions Checkbox -->
+    <div class="flex items-start gap-3 text-sm lg:text-base">
+      <input
+        type="checkbox"
+        id="terms"
+        bind:checked={acceptTerms}
+        class="mt-1 w-4 h-4 lg:w-5 lg:h-5 text-yellow-500 border-gray-400 rounded focus:ring-yellow-500 focus:ring-2"
+        required
+      />
+      <label for="terms" class="leading-relaxed">
+        I accept the
+        <a
+          href="/terms"
+          target="_blank"
+          class="text-yellow-600 hover:text-yellow-700 underline hover:no-underline transition-colors"
+        >
+          terms and conditions
+        </a>
+        and
+        <a
+          href="/privacy"
+          target="_blank"
+          class="text-yellow-600 hover:text-yellow-700 underline hover:no-underline transition-colors"
+        >
+          privacy policy
+        </a>
+      </label>
+    </div>
+
     <div class="flex flex-col sm:flex-row w-full text-center gap-4 lg:gap-5">
       <button
         type="submit"
-        disabled={loading}
-        class="bg-yellow-500 hover:scale-105 transition ease-in-out rounded-full p-3 hover:shadow-xl border w-full cursor-pointer text-base lg:text-3xl"
+        disabled={loading || !acceptTerms}
+        class="bg-yellow-500 hover:scale-105 transition ease-in-out rounded-full p-3 hover:shadow-xl border w-full cursor-pointer text-base lg:text-3xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
       >
         {loading ? "Creating account..." : "Create my account"}
       </button>
-
       <a
         href="/sign-in"
         class="w-full rounded-full border py-3 lg:py-2 px-4 hover:scale-105 hover:shadow-xl transition ease-in-out text-base lg:text-3xl"
