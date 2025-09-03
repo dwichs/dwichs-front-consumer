@@ -31,7 +31,7 @@
       });
 
       if (response.ok) {
-        await invalidateAll(); // or invalidate('/api/my-data');
+        await invalidateAll();
         const group = await response.json();
         $currentGroup = group.group.id;
         message = group.message;

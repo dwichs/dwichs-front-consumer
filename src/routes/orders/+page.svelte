@@ -61,7 +61,7 @@
       orders: Order[];
       currentUserId: string;
     };
-    userGroups?: any; // Add this if you have userGroups in your data
+    userGroups?: any;
   }
 
   let { data }: PageProps & { data: OrdersData } = $props();

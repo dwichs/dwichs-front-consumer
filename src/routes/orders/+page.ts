@@ -11,5 +11,5 @@ export const load: PageLoad = async ({ fetch }) => {
   }
 
   const result = await response.json();
-  return { orders: result.data }; // Access the 'data' property
+  return { orders: result.data };
 };
